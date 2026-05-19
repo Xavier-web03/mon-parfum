@@ -11,7 +11,7 @@ class AdminOnly
     /**
      * Handle an incoming request.
      *
-     * @param  Closure(Request): (Response)  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -20,8 +20,8 @@ class AdminOnly
             return redirect('https://xavier-web03.github.io/parfum');
         }
 
-        // Si l'utilisateur est connecté mais n'est pas admin → redirection vers le front
-        if (auth()->user()->role !== 'admin') {
+        // Vérifier que l'utilisateur connecté est bien l'admin
+        if (auth()->user()->email !== 'bakayokokader211@gmail.com') {
             return redirect('https://xavier-web03.github.io/parfum');
         }
 
