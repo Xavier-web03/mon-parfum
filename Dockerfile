@@ -21,9 +21,6 @@ COPY . .
 # Installer les dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Générer la clé Laravel (si pas déjà générée)
-RUN php artisan key:generate || true
-
 # Mettre en cache la config
 RUN php artisan config:cache
 
@@ -37,4 +34,4 @@ RUN chmod -R 775 storage bootstrap/cache
 RUN php artisan migrate --force || true
 
 # Lancer Laravel
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=${PORT}"]
