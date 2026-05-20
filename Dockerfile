@@ -30,8 +30,8 @@ RUN php artisan storage:link || true
 # Donner les permissions nécessaires
 RUN chmod -R 775 storage bootstrap/cache
 
-# 🔥 Exécuter automatiquement les migrations (OBLIGATOIRE pour Render Free)
+# Exécuter automatiquement les migrations (Render Free)
 RUN php artisan migrate --force || true
 
-# Lancer Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=${PORT}"]
+# Lancer PHP-FPM (PAS php artisan serve)
+CMD ["php-fpm"]
