@@ -1,37 +1,32 @@
-FROM php:8.2-fpm
-
-# Installer les dépendances système
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    zip \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip
-
-# Installer Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+FROM webdevops/php-nginx:8.2
 
 # Dossier de travail
 WORKDIR /app
 
-# Copier le projet
+# Copier uniquement composer.json pour accélérer le cache
+COPY composer.json composer.lock ./
+
+# Installer les dépendances PHP
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+# Copier le reste du projet
 COPY . .
-
-# Installer les dépendances Laravel
-RUN composer install --no-dev --optimize-autoloader
-
-# Mettre en cache la config
-RUN php artisan config:cache
-
-# Créer le lien storage
-RUN php artisan storage:link || true
 
 # Donner les permissions nécessaires
 RUN chmod -R 775 storage bootstrap/cache
 
-# Exécuter automatiquement les migrations (Render Free)
+# Lier le storage
+RUN php artisan storage:link || true
+
+# Optimiser Laravel
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+# Exécuter les migrations (si possible)
 RUN php artisan migrate --force || true
 
-# Lancer PHP-FPM (PAS php artisan serve)
-CMD ["php-fpm"]
+# Exposer le port
+EXPOSE 80
+
+# Nginx + PHP-FPM démarrent automatiquement dans cette image
