@@ -32,3 +32,4 @@ Route::middleware(['auth', AdminOnly::class])->group(function () {
     Route::get('/supprimer-parfum/{article}', [AdminController::class, 'supprimerPage'])->name('supprimer-parfum');
     Route::delete('/supprimer-parfum/{article}', [AdminController::class, 'supprimer']);
 });
+
