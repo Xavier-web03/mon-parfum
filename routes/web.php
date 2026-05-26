@@ -4,12 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminOnly;
-use App\Models\Article;
-
-// 🔹 API PUBLIQUE POUR LES PARFUMS
-Route::get('/api/parfums', function () {
-    return Article::all();
-});
 
 // 🔹 PAGE D’ACCUEIL DU BACKEND (API)
 Route::get('/', function () {
@@ -19,7 +13,7 @@ Route::get('/', function () {
     ]);
 });
 
-// 🔹 AUTH
+// 🔹 AUTH (pages HTML)
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -27,7 +21,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// 🔥 ROUTES ADMIN PROTÉGÉES
+// 🔥 ROUTES ADMIN (HTML)
 Route::middleware(['auth', AdminOnly::class])->group(function () {
 
     Route::get('/admin', [AdminController::class, 'admin'])->name('admin');
