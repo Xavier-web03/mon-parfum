@@ -28,7 +28,7 @@ RUN php artisan config:cache || true
 RUN php artisan route:cache || true
 RUN php artisan view:cache || true
 
-# 🔥 Exécuter automatiquement les migrations au build
+# Exécuter automatiquement les migrations au build
 RUN php artisan migrate --force || true
 
 # Lancer Laravel + migrations au démarrage
