@@ -5,31 +5,18 @@ ENV WEB_PORT=$PORT
 
 WORKDIR /app
 
-# Copier uniquement composer.json et composer.lock
 COPY composer.json composer.lock ./
-
-# Installer les dépendances SANS exécuter les scripts artisan
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-# Copier tout le projet
 COPY . .
 
-# Maintenant exécuter les scripts artisan
 RUN composer run-script post-autoload-dump || true
-
-# Permissions
 RUN chmod -R 775 storage bootstrap/cache
-
-# Storage link
 RUN php artisan storage:link || true
-
-# Optimisations Laravel
 RUN php artisan config:cache || true
 RUN php artisan route:cache || true
 RUN php artisan view:cache || true
 
-# Exécuter automatiquement les migrations au build
 RUN php artisan migrate --force || true
 
-# Lancer Laravel + migrations au démarrage
 CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
