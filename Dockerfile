@@ -28,4 +28,8 @@ RUN php artisan config:cache || true
 RUN php artisan route:cache || true
 RUN php artisan view:cache || true
 
-EXPOSE $PORT
+# 🔥 Exécuter automatiquement les migrations au build
+RUN php artisan migrate --force || true
+
+# Lancer Laravel + migrations au démarrage
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
